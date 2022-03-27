@@ -1,2 +1,0 @@
-DROP DATABASE IF EXISTS hack_db;
-CREATE DATABASE hack_db;
