@@ -1,0 +1,46 @@
+    {{!-- <main class=" text-center form-signin">
+        <form class="form signup-form">
+            <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+            
+            <div class="form-floating">
+                <input type="email" class="form-control" id="email-signup" placeholder="name@example.com">
+                <label for="email-signup">Email address</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password-signup" placeholder="Password">
+                <label for="password-signup">Password</label>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            <br>
+            <p class="h3 mb-3 fw-normal">Or sign in</p>
+<button type="button" class="btn btn-primary btn-lg" id="signup"><a href="/login" style="color: white;">Sign-in</a></button>
+        </form>
+    </main> 
+
+    <script src="/js/signup.js"></script>
+--}}
+
+
+<div class="signup-form">
+    <form action="/" method="post">
+		<h2>Register</h2>
+		<p class="hint-text">Create your account. It's free and only takes a minute.</p>
+        <div class="form-group">
+			<div class="row">
+				<div class="col"><input type="text" class="form-control" name="first_name" placeholder="First Name" required="required"></div>
+				<div class="col"><input type="text" class="form-control" name="last_name" placeholder="Last Name" required="required"></div>
+			</div>        	
+        </div>
+        <div class="form-group">
+        	<input type="email" class="form-control" name="email" placeholder="Email" id="email-signup" required="required">
+        </div>
+		<div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password" id="password-signup" required="required">
+        </div>
+		<div class="form-group">
+            <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
+        </div>
+    </form>
+	<div class="text-center">Already have an account? <a href="/login">Sign in</a></div>
+</div>
+<script src="/js/signup.js"></script>
