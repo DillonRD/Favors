@@ -85,19 +85,19 @@ def generate_user_entry(user_results):
         new_entry = {}
         
         # enter each respective variable into the dictionary
-        new_entry["user_id"] = user.user_id
-        new_entry["email"] = user.email
-        new_entry["password"] = user.password
-        new_entry["first_name"] = user.first
-        new_entry["last_name"] = user.last
-        new_entry["address"] = user.address
-        new_entry["state"] = user.state
-        new_entry["zipcode"] = user.zipcode
-        new_entry["is_admin"] = user.isAdmin
+        new_entry["user_id"] = cur_user.user_id
+        new_entry["email"] = cur_user.email
+        new_entry["password"] = cur_user.password
+        new_entry["first_name"] = cur_user.first
+        new_entry["last_name"] = cur_user.last
+        new_entry["address"] = cur_user.address
+        new_entry["state"] = cur_user.state
+        new_entry["zipcode"] = cur_user.zipcode
+        new_entry["is_admin"] = cur_user.is_admin
 
         # set up reservations
         reservation_info = []
-        result = generate_job_entry(cur_res, cur_hotel)
+        result = generate_job_entry(cur_job)
         reservation_info.append(result)
         
         new_entry["reservations"] = reservation_info
