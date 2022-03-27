@@ -11,24 +11,26 @@ import os
 import sqlalchemy as sq
 import sys
 
-# set up request parser for POST
-reservation_args = reqparse.RequestParser()
-reservation_args.add_argument("user_id", type = int, help = "Enter the users ID. (int)", required = True)
-reservation_args.add_argument("hotel_id", type = int, help = "Enter the hotel ID. (int)", required = True)
-reservation_args.add_argument("check_in", type = str, help = "Enter the check_in of the reservation. (string)", required = True)
-reservation_args.add_argument("check_out", type = str, help = "Enter the check_out of the reservation. (string)", required = True)
-reservation_args.add_argument("total_price", type = int, help = "Enter the total price of the reservation (decimal number)", required = True)
-reservation_args.add_argument("reserved_standard_count", type = int, help = "Enter the number of standard rooms (int)", required = True)
-reservation_args.add_argument("reserved_queen_count", type = int, help = "Enter the number of queen rooms (int)", required = True)
-reservation_args.add_argument("reserved_king_count", type = int, help = "Enter the number of king rooms (int)", required = True)
 
-put_reservation_args = reqparse.RequestParser()
-put_reservation_args.add_argument("check_in", type = str, help = "Enter the check_in of the reservation. (string)", required = True)
-put_reservation_args.add_argument("check_out", type = str, help = "Enter the check_out of the reservation. (string)", required = True)
-put_reservation_args.add_argument("total_price", type = int, help = "Enter the total price of the reservation (decimal number)", required = True)
-put_reservation_args.add_argument("reserved_standard_count", type = int, help = "Enter the number of standard rooms (int)", required = True)
-put_reservation_args.add_argument("reserved_queen_count", type = int, help = "Enter the number of queen rooms (int)", required = True)
-put_reservation_args.add_argument("reserved_king_count", type = int, help = "Enter the number of king rooms (int)", required = True)
+# set up request parser for POST
+user_args = reqparse.RequestParser()
+user_args.add_argument("user_id", type = int, help = "Enter the users ID. (int)", required = True)
+user_args.add_argument("email", type = str, help = "Enter the Email of the USER. (string)", required = True)
+user_args.add_argument("password", type = str, help = "Enter the Password of the USER. (string)", required = True)
+user_args.add_argument("first", type = str, help = "Enter the First Name of the USER (string)", required = True)
+user_args.add_argument("last", type = str, help = "Enter the Last Name of the USER (string)", required = True)
+user_args.add_argument("address", type = str, help = "Enter the Address of the USER (string)", required = True)
+user_args.add_argument("state", type = str, help = "Enter the State of the USER (string)", required = True)
+user_args.add_argument("zipcode", type = str, help = "Enter the zip code of the USER (string)", required = True)
+
+put_user_args = reqparse.RequestParser()
+put_user_args.add_argument("email", type = str, help = "Enter the Email of the USER. (string)", required = True)
+put_user_args.add_argument("password", type = str, help = "Enter the Password of the USER. (string)", required = True)
+put_user_args.add_argument("first", type = str, help = "Enter the First Name of the USER (string)", required = True)
+put_user_args.add_argument("last", type = str, help = "Enter the Last Name of the USER (string)", required = True)
+put_user_args.add_argument("address", type = str, help = "Enter the Address of the USER (string)", required = True)
+put_user_args.add_argument("state", type = str, help = "Enter the State of the USER (string)", required = True)
+put_user_args.add_argument("zipcode", type = str, help = "Enter the zip code of the USER (string)", required = True)
 
 
 # load Flask and API
@@ -44,12 +46,12 @@ def generate_model(host, user, password, database, outfile=None):
             f"mysql+pymysql://{user}:{password}@{host}/{database}")
         metadata = sq.MetaData(bind=engine)
         metadata.reflect()
-        # set up output file for database classes
-        #outfile = io.open(outfile, "w",
-        #                encoding="utf-8") if outfile else sys.stdout
-        # generate code and output to outfile
-        #generator = CodeGenerator(metadata)
-        #generator.render(outfile)
+        # # set up output file for database classes
+        # outfile = io.open(outfile, "w",
+        #                 encoding="utf-8") if outfile else sys.stdout
+        # # generate code and output to outfile
+        # generator = CodeGenerator(metadata)
+        # generator.render(outfile)
 
     except sq.exc.DBAPIError as e:
         return e
@@ -186,23 +188,26 @@ def generate_amenities(hotel):
 
 # returns a dictionary of the information of the reservation sent
 # used when the admin gets all the users information and a single reservation
-def generate_user_reservations_entry(result):
+def generate_user_jobs_entry(result):
     
     result_list = []
-    for hotel, res in result:
+    for job in result:
         
         # set up dictionary to be added to result list
         new_entry = {}
         
         # enter each respective variable into the dictionary
-        new_entry["reservation_id"] = res.reservation_id
-        new_entry["user_id"] = res.user_id
-        new_entry["check_in"] = str(res.check_in)
-        new_entry["check_out"] = str(res.check_out)
-        new_entry["total_price"] = float(res.total_price)
-        new_entry["reserved_standard_count"] = res.reserved_standard_count
-        new_entry["reserved_queen_count"] = res.reserved_queen_count
-        new_entry["reserved_king_count"] = res.reserved_king_count
+        # entry["user_id"] = user.user_id
+        # entry["email"] = user.email
+        # entry["password"] = user.password
+        # entry["first_name"] = user.first
+        # entry["last_name"] = user.last
+        # entry["address"] = user.address
+        # entry["state"] = user.state
+        # entry["zipcode"] = user.zipcode
+        # entry["is_admin"] = user.isAdmin
+
+    #format["user"] = entry
 
         hotel_info = generate_hotel_entry(hotel)
         
@@ -212,8 +217,8 @@ def generate_user_reservations_entry(result):
     return result_list
 
 # function to set a valid json for user object
-# returns a user dictionary including the user info reservation info and hotel info
-def generate_single_reservation_entry(user, res, hotel):
+# returns a user dictionary including the user info
+def generate_single_user_entry(user):
 
     # set up dictionary to be added to result list
     format = {}
@@ -221,26 +226,17 @@ def generate_single_reservation_entry(user, res, hotel):
     
     # enter each respective variable into the dictionary
     entry["user_id"] = user.user_id
-    entry["first_name"] = user.first_name
-    entry["last_name"] = user.last_name
     entry["email"] = user.email
     entry["password"] = user.password
-    entry["isAdmin"] = user.isAdmin
-    entry["phone_number"] = user.phone_number
-    entry["date_of_birth"] = str(user.date_of_birth)
+    entry["first_name"] = user.first
+    entry["last_name"] = user.last
+    entry["address"] = user.address
+    entry["state"] = user.state
+    entry["zipcode"] = user.zipcode
+    entry["is_admin"] = user.isAdmin
 
-    format["user_information"] = entry
-    
-    # set up reservations
-    format["reservation_id"] = res.reservation_id
-    format["check_in"] = str(res.check_in)
-    format["check_out"] = str(res.check_out)
-    format["total_price"] = float(res.total_price)
-    format["reserved_standard_count"] = res.reserved_standard_count
-    format["reserved_queen_count"] = res.reserved_queen_count
-    format["reserved_king_count"] = res.reserved_king_count
+    format["user"] = entry
 
-    format["hotel_information"] = generate_hotel_entry(hotel)
 
     # return results
     return format
@@ -338,9 +334,9 @@ class AllReservations(Resource):
 ## ---------- User ---------- ##
 # class for interacting with user Reservations in the database
 
-class UserReservation(Resource):
+class MultipleUsers(Resource):
     
-    # function to get a user reservations based on user_id from the database
+    # function to get a user jobs based on user_id from the database
     def get(self, user_id):
 
         # get username, password, host, and database
@@ -356,7 +352,7 @@ class UserReservation(Resource):
 
 
         try:
-            query_result = session.query(Hotel, Reservation).filter(Hotel.hotel_id == Reservation.hotel_id).filter(Reservation.user_id == user_id).order_by(Reservation.check_in).all()
+            query_result = session.query(User, Job).filter(User.user_id == user_id).filter(Job.user_id== User.user_id).all()
 
         except sq.exc.DBAPIError as e:
             session.rollback()
@@ -383,51 +379,9 @@ class UserReservation(Resource):
     
 
 
-class SingleBooking(Resource):
-    # function to delete a single reservation from the database by ID number
-    def delete(self, reservation_id):
+class SingleUser(Resource):
 
-        # get username, password, host, and database
-        host = os.environ.get("host")
-        username = os.environ.get("user")
-        password = os.environ.get("password")
-        database = os.environ.get("database")
-
-        engine = generate_model(host, username, password, database)
-
-        Session = sessionmaker(bind = engine)
-        session = Session()
-
-        
-        try:
-            result = session.query(Reservation).get(reservation_id)
-        
-
-        except sq.exc.DBAPIError as e:
-            session.rollback()
-            return e    
-        else:
-                        
-            if not result:
-                abort(
-                    404,
-                    description=
-                    f"Reservation ID {reservation_id} does not exist in the database."
-                )
-
-        
-            session.delete(result)
-            session.commit()
-            # return message on success
-            return {
-                "message":
-                f"Reservation ID {reservation_id} was successfully deleted."
-            }
-        finally:
-            session.close()
-            engine.dispose()
-
-    def put(self, reservation_id):
+    def put(self, user_id):
         
         # get username, password, host, and database
         host = os.environ.get("host")
@@ -441,24 +395,26 @@ class SingleBooking(Resource):
         session = Session()
 
         try:
-            # finds the reservation based on reservation ID
-            result = session.query(Reservation).get(reservation_id)
+            # finds the User based on User ID
+            result = session.query(User).get(user_id)
             # if it doesn't exsist error
             if not result:
                 abort(
                     404,
                     description=
-                    f"Reservation ID {reservation_id} does not exist in the database."
+                    f"Reservation ID {user_id} does not exist in the database."
                 )
             # checks to see if the necessary argument have been passed 
-            args = put_reservation_args.parse_args()
+            args = put_user_args.parse_args()
 
-            result.check_in = request.json["check_in"]
-            result.check_out = request.json["check_out"]
-            result.total_price = request.json["total_price"]
-            result.reserved_standard_count = request.json["reserved_standard_count"]
-            result.reserved_queen_count = request.json["reserved_queen_count"]
-            result.reserved_king_count = request.json["reserved_king_count"]
+            result.email = request.json["email"]
+            result.password = request.json["password"]
+            result.first = request.json["first"]
+            result.last = request.json["last"]
+            result.address = request.json["address"]
+            result.state = request.json["state"]
+            result.zipcode = request.json["zipcode"]
+            result.is_admin = request.json["is_admin"]
             
             # update the information in the entry
             session.commit()
@@ -470,14 +426,14 @@ class SingleBooking(Resource):
             # return message on success
             return {
                 "message":
-                f"Reservation ID {reservation_id} was successfully updated."
+                f"User ID {user_id} was successfully updated."
             }
         finally:
             session.close()
             engine.dispose()
 
-    # function to get a specific reservation based on reservation_id from the database
-    def get(self, reservation_id):
+    # function to get a specific User based on user_id from the database
+    def get(self, user_id):
 
         # get username, password, host, and database
         host = os.environ.get("host")
@@ -493,7 +449,7 @@ class SingleBooking(Resource):
         
         try:     
 
-            query_result = session.query(User, Reservation, Hotel).filter(User.user_id == Reservation.user_id).filter(Reservation.hotel_id == Hotel.hotel_id).filter(Reservation.reservation_id == reservation_id).first()
+            query_result = session.query(User).get(user_id)
                 
         except sq.exc.DBAPIError as e:
             session.rollback()
@@ -504,11 +460,11 @@ class SingleBooking(Resource):
                 abort(
                     404,
                     description=
-                    f"Reservation ID {reservation_id} does not exist in the database."
+                    f"Job ID {user_id} does not exist in the database."
                 )
 
             # generate a dict from res
-            result = generate_single_reservation_entry(query_result[0], query_result[1], query_result[2] )
+            result = generate_single_user_entry(query_result[0], query_result[1])
             
         # return the result
             return result
@@ -520,9 +476,10 @@ class SingleBooking(Resource):
     
 
 # add to each class to API
-api.add_resource(UserReservation, "/api/user/<int:user_id>")
+api.add_resource(SingleUser, "/api/user/<int:user_id>")
 api.add_resource(AllReservations, "/api/user")
 api.add_resource(SingleBooking, "/api/reservation/<int:reservation_id>")
 
 if __name__ == "__main__":  
     app.run(debug=True)
+
